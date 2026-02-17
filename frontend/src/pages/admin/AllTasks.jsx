@@ -52,6 +52,16 @@ export default function AllTasks() {
     loadTasks();
   };
 
+  const getDeadlineColor = (deadline) => {
+    if (!deadline) return "text-gray-400";
+
+    const now = new Date();
+    const due = new Date(deadline);
+
+    return now > due ? "text-red-600 font-bold" : "text-blue-600 font-semibold";
+  };
+
+
   return (
     <Layout>
       <h1 className="text-3xl font-semibold mb-6">All Tasks</h1>
@@ -83,7 +93,7 @@ export default function AllTasks() {
                   {editId === t.id ? (
                     <input
                       value={editData.title}
-                      onChange={(e)=>setEditData({...editData,title:e.target.value})}
+                      onChange={(e) => setEditData({ ...editData, title: e.target.value })}
                       className="border p-1 w-full rounded"
                     />
                   ) : t.title}
@@ -94,7 +104,7 @@ export default function AllTasks() {
                   {editId === t.id ? (
                     <textarea
                       value={editData.description}
-                      onChange={(e)=>setEditData({...editData,description:e.target.value})}
+                      onChange={(e) => setEditData({ ...editData, description: e.target.value })}
                       className="border p-1 w-full rounded"
                     />
                   ) : (
@@ -121,63 +131,64 @@ export default function AllTasks() {
                 </td>
 
                 {/* DEADLINE */}
-                <td className="px-6 py-4 text-center">
+                <td className={`px-6 py-4 text-center ${getDeadlineColor(t.deadline)}`}>
                   {t.deadline
                     ? new Date(t.deadline).toLocaleString("en-IN", {
-                        day:"2-digit",
-                        month:"short",
-                        year:"numeric",
-                        hour:"2-digit",
-                        minute:"2-digit"
-                      })
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })
                     : "—"}
                 </td>
 
+
                 {/* ACTIONS */}
                 <td className="px-6 py-4">
-  <div className="flex justify-center gap-2 flex-wrap">
+                  <div className="flex justify-center gap-2 flex-wrap">
 
-    {/* PENDING → edit/delete */}
-    {t.status === "pending" && (
-      <>
-        {editId === t.id ? (
-          <button
-            onClick={()=>saveEdit(t.id)}
-            className="bg-indigo-600 text-white px-3 py-1 rounded"
-          >
-            Save
-          </button>
-        ) : (
-          <button
-            onClick={()=>startEdit(t)}
-            className="bg-blue-600 text-white px-3 py-1 rounded"
-          >
-            Edit
-          </button>
-        )}
+                    {/* PENDING → edit/delete */}
+                    {t.status === "pending" && (
+                      <>
+                        {editId === t.id ? (
+                          <button
+                            onClick={() => saveEdit(t.id)}
+                            className="bg-indigo-600 text-white px-3 py-1 rounded"
+                          >
+                            Save
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => startEdit(t)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded"
+                          >
+                            Edit
+                          </button>
+                        )}
 
-        <button
-          onClick={()=>deleteTask(t.id)}
-          className="bg-red-500 text-white px-3 py-1 rounded"
-        >
-          Delete
-        </button>
-      </>
-    )}
+                        <button
+                          onClick={() => deleteTask(t.id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
 
-    {/* ⭐ IN REVIEW → Review Button */}
-    {t.status === "inreview" && (
-  <button
-    onClick={()=>navigate(`/review/${t.id}`)}
-    className="bg-yellow-500 text-white px-3 py-1 rounded"
-  >
-    Review
-  </button>
-)}
+                    {/* ⭐ IN REVIEW → Review Button */}
+                    {t.status === "inreview" && (
+                      <button
+                        onClick={() => navigate(`/review/${t.id}`)}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded"
+                      >
+                        Review
+                      </button>
+                    )}
 
 
-  </div>
-</td>
+                  </div>
+                </td>
 
               </tr>
             ))}

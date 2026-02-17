@@ -18,9 +18,7 @@ export const getTasks = async (req,res)=>{
 };
 
 
-/* =====================================
-   ADMIN : GET USERS
-===================================== */
+
 /* =====================================
    ADMIN : GET USERS
 ===================================== */
@@ -67,36 +65,9 @@ export const getMyTasks = async (req,res)=>{
 };
 
 
-/* =====================================
-   USER : SUBMIT TASK FOR REVIEW ⭐
-===================================== */
-export const submitWork = async (req,res)=>{
-  const { message } = req.body;
-
-  await pool.query(
-    `UPDATE tasks 
-     SET status='inreview', command_message=$1
-     WHERE id=$2`,
-    [message, req.params.id]
-  );
-
-  res.json("Task submitted for review");
-};
 
 
-/* =====================================
-   ADMIN : APPROVE TASK ⭐
-===================================== */
-export const approveTask = async (req,res)=>{
-  await pool.query(
-    `UPDATE tasks 
-     SET status='completed', completed_at=NOW()
-     WHERE id=$1`,
-    [req.params.id]
-  );
 
-  res.json("Task approved");
-};
 
 
 /* =====================================
@@ -137,3 +108,49 @@ export const getStats = async (req,res)=>{
     completed: completed.rows[0].count
   });
 };
+
+/* =====================================
+   USER SUBMIT WORK → status = inreview
+===================================== */
+export const submitWork = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { comment } = req.body;
+
+    await pool.query(
+      `UPDATE tasks 
+       SET comment=$1, status='inreview' 
+       WHERE id=$2`,
+      [comment, id]
+    );
+
+    res.json({ message: "Work submitted for review" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json("Error submitting work");
+  }
+};
+
+
+/* =====================================
+   ADMIN APPROVE TASK → completed
+===================================== */
+
+export const approveTask = async (req,res)=>{
+  try{
+    const { id } = req.params;
+
+    await pool.query(
+      `UPDATE tasks 
+       SET status='completed', completed_at=NOW()
+       WHERE id=$1`,
+      [id]
+    );
+
+    res.json("Task approved and completed");
+  }catch(err){
+    res.status(500).json(err.message);
+  }
+};
+
+

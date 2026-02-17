@@ -23,9 +23,11 @@ router.get("/admin/users", verifyToken, isAdmin, getUsers);
 router.post("/admin/assign", verifyToken, isAdmin, assignTask);
 router.patch("/approve/:id", verifyToken, isAdmin, approveTask);
 
+
 /* USER ROUTES */
 router.get("/my", verifyToken, getMyTasks);
 router.patch("/submit/:id", verifyToken, submitWork);
+
 
 /* COMMON ROUTES */
 router.put("/:id", verifyToken, updateTask);

@@ -29,6 +29,16 @@ useEffect(() => {
   loadTasks();
 }, []);
 
+const getDeadlineColor = (deadline) => {
+  if (!deadline) return "text-gray-400";
+
+  const now = new Date();
+  const due = new Date(deadline);
+
+  return now > due ? "text-red-600 font-bold" : "text-blue-600 font-semibold";
+};
+
+
 
 
   return(
